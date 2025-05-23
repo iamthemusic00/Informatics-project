@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text File Search</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
+      color: #f0f0f0;
+      text-align: center;
+      padding: 40px;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    button {
+      margin: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    input[type="file"] {
+      background: #444;
+      color: #fff;
+    }
+
+    input[type="text"] {
+      width: 300px;
+    }
+
+    button {
+      background: #ff9800;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ffa726;
+    }
+
+    #output {
+      margin-top: 30px;
+      padding: 20px;
+      background: #2b2b3d;
+      border-radius: 10px;
+      text-align: left;
+      white-space: pre-wrap;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Text File Highlighter</h1>
+
+  <input type="file" id="fileInput" accept=".txt"><br>
+  <input type="text" id="searchInput" placeholder="Type a word or symbol">
+  <button onclick="highlightText()">Find</button>
+
+  <div id="output"></div>
+
+  <script>
+    let fileContent = "";
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        fileContent = event.target.result;
+        document.getElementById('output').innerText = fileContent;
+      };
+      reader.readAsText(file);
+    });
+
+    function highlightText() {
+      const word = document.getElementById('searchInput').value;
+      if (!word || !fileContent) return;
+
+      const safeWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // escape regex symbols
+      const regex = new RegExp(`(${safeWord})`, 'gi');
+      const highlighted = fileContent.replace(regex, '<span class="highlight">$1</span>');
+      document.getElementById('output').innerHTML = highlighted;
+    }
+  </script>
+
+</body>
+</html>
